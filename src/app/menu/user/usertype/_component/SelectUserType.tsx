@@ -42,7 +42,6 @@ export default function SelectUserType({ userInfo }: Props) {
   const { data: userTypeListData } = useUserTypeList();
   const userTypeMutation = useUpdateUserType({
     onSuccess: () => {
-      showToast({ content: "직업이 변경 되었습니다!", type: 'success' });
       setUserInfo(prev => ({
         ...prev,
         userType: userType?.name,
@@ -74,6 +73,10 @@ export default function SelectUserType({ userInfo }: Props) {
     setDropList(!dropList);
   }
 
+  const handleConfirm = () => {
+    showToast({ content: "직업이 변경 되었습니다!", type: 'success' });
+  }
+
   return (
     <div className={style.container}>
       <div className={cx([style.select_box, dropList && style.active])} onClick={handleDropList}>
@@ -103,6 +106,7 @@ export default function SelectUserType({ userInfo }: Props) {
         </div>
 
       }
+      <button onClick={handleConfirm} className={style.confirm_btn}>확인</button>
     </div>
   )
 }
