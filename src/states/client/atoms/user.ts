@@ -34,3 +34,24 @@ export const userState = atom<User>({
   },
   effects_UNSTABLE: [persistAtomEffect]
 });
+
+export type UserTempInfo = {
+  accessToken: string;
+  refreshToken: string;
+} & User;
+
+export const userTempState = atom<UserTempInfo>({
+  key: `userTempState`,
+  default: {
+    accessToken: "",
+    refreshToken: "",
+    name: "",
+    email: "",
+    nickname: "",
+    avatarUrl: "",
+    userType: "",
+    userTypeUrl: "",
+    pushYN: false,
+    isMember: false
+  }
+});

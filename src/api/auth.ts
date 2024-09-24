@@ -9,11 +9,6 @@ const loginWithKakao = async (kakaoCode: string | null) => {
     `/api/v1/auth/login/oauth2/callback/kakao?code=${kakaoCode}&origin=${process.env.NEXT_PUBLIC_MODE}`
   );
 
-  setToken({
-    accessToken: response.data.token.accessToken,
-    refreshToken: response.data.token.refreshToken
-  });
-
   return response;
 };
 
@@ -52,11 +47,6 @@ const loginWithGoogle = async (code: string | null) => {
     `/api/v1/auth/login/oauth2/callback/google?code=${code}&origin=${process.env.NEXT_PUBLIC_MODE}`
   );
 
-  setToken({
-    accessToken: response.data.token.accessToken,
-    refreshToken: response.data.token.refreshToken
-  });
-
   return response;
 };
 
@@ -64,11 +54,6 @@ const loginWithApple = async (code: string | null) => {
   const response: ApiResponse = await get(
     `/api/v1/auth/login/oauth2/callback/apple?code=${code}&origin=${process.env.NEXT_PUBLIC_MODE}`
   );
-
-  setToken({
-    accessToken: response.data.token.accessToken,
-    refreshToken: response.data.token.refreshToken
-  });
 
   return response;
 };

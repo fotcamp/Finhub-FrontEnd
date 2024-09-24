@@ -2,13 +2,17 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useRecoilValue } from "recoil";
 
 import { EXTERNAL_URL } from "@/app/menu/termsPolicy/_component/TermsPolicyScreen";
 
 import { CheckItem } from "./CheckItem";
 
+import { userTempState } from "@/states/client/atoms/user";
 import { AgreementParams } from "@/states/server/Login/postAgreement";
 import { useUpateAgreement } from "@/states/server/mutations";
+
+import { useSetLoginInfo } from "@/hooks/useSetLoginInfo";
 
 import ArrowRight from "@/public/icons/icon_arrow_right_8.svg";
 
@@ -48,8 +52,12 @@ export const AgreeScreen = () => {
 
   const { showToast } = useToast();
 
+  const userTempInfo = useRecoilValue(userTempState);
+  const setLoginInfo = useSetLoginInfo();
+
   const useUpateAgreementMutation = useUpateAgreement({
     onSuccess: () => {
+      setLoginInfo(userTempInfo);
       router.replace("/home");
     },
     onError: () => {

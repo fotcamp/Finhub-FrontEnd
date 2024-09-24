@@ -2,35 +2,40 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 
 import Loading from "@/app/loading";
 
 import { authAPI } from "@/api/auth";
-import { fcmAPI } from "@/api/fcm";
 
-import { userState } from "@/states/client/atoms/user";
+import { userTempState } from "@/states/client/atoms/user";
 
-import { jsToNative } from "@/utils/jsToNative";
+import { useSetLoginInfo } from "@/hooks/useSetLoginInfo";
 
 export default function KakaoLogin() {
   const router = useRouter();
-  const [_, setUserInfo] = useRecoilState(userState);
+  const setLoginInfo = useSetLoginInfo();
+  const setUserTempInfo = useSetRecoilState(userTempState);
 
   useEffect(() => {
     const { searchParams } = new URL(window.location.href);
-    const kakaoCode = searchParams.get("code");
+    const code = searchParams.get("code");
 
-    /** Next Server **/
     const fetchData = async () => {
       try {
-        const { status, data } = await authAPI.loginWithKakao(kakaoCode);
+        const { status, data } = await authAPI.loginWithKakao(code);
         if (status === "SUCCESS") {
-          setUserInfo(data.info);
+          const userInfo = {
+            accessToken: data.token.accessToken,
+            refreshToken: data.token.refreshToken,
+            ...data.info
+          };
 
-          jsToNative({ val1: "getPushToken" }, (data: any) => {
-            fcmAPI.updateFcmToken(data.detail);
-          });
+          setUserTempInfo(userInfo);
+
+          if (data.info.isMember) {
+            setLoginInfo(userInfo);
+          }
 
           const next = authAPI.pathAfterLogin(data.info.isMember);
           router.replace(next);
